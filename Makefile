@@ -6,7 +6,7 @@
 #    By: fivieira <fivieira@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/10 15:53:34 by fivieira          #+#    #+#              #
-#    Updated: 2023/08/14 18:17:51 by fivieira         ###   ########.fr        #
+#    Updated: 2023/08/14 18:22:24 by fivieira         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,8 +41,6 @@ FT_PRINTF = ${FT_PRINTF_PATH}/libftprintf.a
 
 all:	${NAME_CLIENT} ${NAME_SERVER}
 
-#$(FT_PRINTF):
-#	$(MAKE) $(FT_PRINTF_PATH)
 
 $(NAME_CLIENT): ${OBJS_CLIENT}
 		$(MAKE) $(FT_PRINTF_PATH)
