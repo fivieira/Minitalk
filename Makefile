@@ -6,16 +6,24 @@
 #    By: fivieira <fivieira@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/10 15:53:34 by fivieira          #+#    #+#              #
-#    Updated: 2023/08/12 10:51:57 by fivieira         ###   ########.fr        #
+#    Updated: 2023/08/14 18:17:51 by fivieira         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libftprintf.a
+NAME_CLIENT = client
+NAME_SERVER = server
 
-SRC = ft_printf.c is_argument.c handle_argument_format.c handle_char.c handle_decimal.c handle_hexadecimal.c handle_percent.c handle_pointer.c \
-handle_string.c handle_unsigned_decimal.c
+SRC_CLIENT = client.c 
+SRC_SERVER = server.c
 
-OBJS = ${SRC:.c=.o}
+BONUS_NAME_CLIENT =
+BONUS_NAME_SERVER = 
+
+BONUS_OBJS = ${BONUS_NAME_CLIENT:.c=.o}
+BONUS_OBJS = ${BONUS_NAME_SERVER:.c=.o}
+
+OBJS_CLIENT = ${SRC_CLIENT:.c=.o}
+OBJS_SERVER = ${SRC_SERVER:.c=.o}
 
 INCLUDE = -I .
 
@@ -27,27 +35,32 @@ CFLAGS = -Wall -Wextra -Werror
 
 MAKE = make -C
 
-LIBFT_PATH = libft
+FT_PRINTF_PATH = ft_printf
 
-LIBFT = ${LIBFT_PATH}/libft.a
+FT_PRINTF = ${FT_PRINTF_PATH}/libftprintf.a
 
-.c.o:
-		${CC} ${CFLAGS} ${INCLUDE} -c $< -o ${<:.c=.o}
+all:	${NAME_CLIENT} ${NAME_SERVER}
 
-$(NAME): ${OBJS}
-		${MAKE} ${LIBFT_PATH} all
-		cp ${LIBFT} ${NAME}
-		ar rcs ${NAME} ${OBJS}
+#$(FT_PRINTF):
+#	$(MAKE) $(FT_PRINTF_PATH)
 
-all:    ${NAME}
+$(NAME_CLIENT): ${OBJS_CLIENT}
+		$(MAKE) $(FT_PRINTF_PATH)
+		$(CC) $(CFLAGS) $(SRC_CLIENT) -o $(NAME_CLIENT) $(FT_PRINTF) $(INCLUDE)
+
+$(NAME_SERVER): ${OBJS_SERVER}
+		$(MAKE) $(FT_PRINTF_PATH)
+		$(CC) $(CFLAGS) $(SRC_SERVER) -o $(NAME_SERVER) $(FT_PRINTF) $(INCLUDE)	
 
 clean:
-		${MAKE} ${LIBFT_PATH} clean
-		${RM} ${OBJS} 
+		${MAKE} ${FT_PRINTF_PATH} clean
+		${RM} ${OBJS_CLIENT}
+		${RM} ${OBJS_SERVER} 
 
 fclean: clean
-		${MAKE} ${LIBFT_PATH} fclean
-		${RM} ${NAME}
+		${MAKE} ${FT_PRINTF_PATH} fclean
+		${RM} ${NAME_CLIENT}
+		${RM} ${NAME_SERVER}
 
 re: fclean all
 
