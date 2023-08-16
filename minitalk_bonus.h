@@ -17,7 +17,4 @@
 # include <signal.h>
 # include <stdlib.h>
 
-void	err_exit(const char *format, ...);
-
-
 #endif

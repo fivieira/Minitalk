@@ -20,20 +20,6 @@ void	handle_errors(char *error_msg)
 	exit(EXIT_FAILURE);
 }
 
-void	args_check(int argc, char **argv)
-{
-	int	i;
-
-	i = 0;
-	if (argc != 3)
-		handle_errors("Invalid number of arguments");
-	while (argv[1][i])
-		if (!ft_isdigit(argv[1][i++]))
-			handle_errors("Invalid PID");
-	if (*argv[2] == 0)
-		handle_errors("Invalid message (empty)");
-}
-
 void	send_msg(pid_t sv_pid, char *msg)
 {
 	unsigned char	c;
@@ -74,11 +60,22 @@ void	config_signals(void)
 		handle_errors("Failed to change SIGUSR2's behavior");
 }
 
-int	main(int argc, char **argv)
+int	main(int argc, char *argv[])
 {
 	pid_t		sv_pid;
+	int	i;
 
-	args_check(argc, argv);
+	i = 0;
+	if (argc != 3)
+		handle_errors("Invalid number of arguments");
+	while (argv[1][i])
+	{
+		if (!ft_isdigit(argv[1][i]))
+			handle_errors("Invalid PID");
+		i++;	
+	}
+	if (argv[2][0] == 0)
+		handle_errors("Invalid message (empty)");
 	sv_pid = ft_atoi(argv[1]);
 	config_signals();
 	send_msg(sv_pid, argv[2]);
