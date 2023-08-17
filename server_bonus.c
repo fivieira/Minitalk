@@ -12,59 +12,46 @@
 
 #include "minitalk_bonus.h"
 
-void	handle_errors(char *error_msg)
+void	ft_btoa(int sig, siginfo_t *info, void *context)
 {
-	write(STDERR_FILENO, "Error: ", 7);
-	write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
-	write(STDERR_FILENO, "\n", 1);
-	exit(EXIT_FAILURE);
-}
+	static int	bit;
+	static int	i;
 
-void	handle_sigusr(int signum, siginfo_t *info, void *ucontent)
-{
-	static int				bit_itr = -1;
-	static unsigned char	c;
-
-	(void)ucontent;
-	if (bit_itr < 0)
-		bit_itr = 7;
-	if (signum == SIGUSR1)
-		c |= (1 << bit_itr);
-	bit_itr--;
-	if (bit_itr < 0 && c)
+	(void)context;
+	if (sig == SIGUSR1)
+		i |= (0x01 << bit);
+	bit++;
+	if (bit == 8)
 	{
-		ft_putchar_fd(c, STDOUT_FILENO);
-		c = 0;
-		if (kill(info->si_pid, SIGUSR2) == -1)
-			handle_errors("Server failed to send SIGUSR2");
-		return ;
+		if (i == 0)
+			kill(info->si_pid, SIGUSR2);
+		write(1,"%c" + i, 2);
+		bit = 0;
+		i = 0;
 	}
-	if (kill(info->si_pid, SIGUSR1) == -1)
-		handle_errors("Failed to send SIGUSR1");
 }
 
-// 1 -> 00000001
-// a -> 01100001
-
-void	config_signals(void)
+int	main(int argc, char **argv)
 {
-	struct sigaction	sa_newsig;
+	int					pid;
+	struct sigaction	action;
 
-	sa_newsig.sa_sigaction = &handle_sigusr;
-	sa_newsig.sa_flags = SA_SIGINFO;
-	if (sigaction(SIGUSR1, &sa_newsig, NULL) == -1)
-		handle_errors("Failed to change SIGUSR1's behavior");
-	if (sigaction(SIGUSR2, &sa_newsig, NULL) == -1)
-		handle_errors("Failed to change SIGUSR2's behavior");
-}
-
-int	main(void)
-{
-	pid_t	pid;
-
+	(void)argv;
+	if (argc != 1)
+	{
+		ft_printf("Error\n");
+		return (1);
+	}
 	pid = getpid();
-	ft_printf("SERVER PID = %d\n\n", pid);
-	while (1)
-		config_signals();
-	return (EXIT_SUCCESS);
+	ft_printf("Server Pid: %d\n", pid);
+	action.sa_sigaction = ft_btoa;
+	sigemptyset(&action.sa_mask);
+	action.sa_flags = 0;
+	while (argc == 1)
+	{
+		sigaction(SIGUSR1, &act, NULL);
+		sigaction(SIGUSR2, &act, NULL);
+		pause();
+	}
+	return (0);
 }

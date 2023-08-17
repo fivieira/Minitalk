@@ -12,74 +12,76 @@
 
 #include "minitalk_bonus.h"
 
-void	handle_errors(char *error_msg)
+void	confirmmsg(int signal)
 {
-	write(STDERR_FILENO, "Error: ", 7);
-	write(STDERR_FILENO, error_msg, ft_strlen(error_msg));
-	write(STDERR_FILENO, "\n", 1);
-	exit(EXIT_FAILURE);
+	if (signal == SIGUSR2)
+		write(1,"message recieved\n",18);
 }
 
-void	send_msg(pid_t sv_pid, char *msg)
+static int	ft_atoi(const char *str)
 {
-	unsigned char	c;
-	int				nbr_bits;
+	int					i;
+	int					sign;
+	unsigned long int	result;
 
-	while (*msg)
+	i = 0;
+	sign = 1;
+	result = 0;
+	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-')
 	{
-		c = *msg;
-		nbr_bits = 8;
-		while (nbr_bits--)
-		{
-			if (c & 0b10000000)
-				kill(sv_pid, SIGUSR1);
-			else
-				kill(sv_pid, SIGUSR2);
-			usleep(50);
-			c <<= 1;
-		}
-		msg++;
+		sign = -1;
+		i++;
+	}
+	else if (str[i] == '+')
+		i++;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result *= 10;
+		result += str[i] - '0';
+		i++;
+	}
+	return (result * sign);
+}
+
+void	ft_atob(int pid, char c)
+{
+	int	bit;
+
+	bit = 0;
+	while (bit < 8)
+	{
+		if ((c & (0x01 << bit)))
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		usleep(500);
+		bit++;
 	}
 }
 
-void	sig_handler(int signum)
+int	main(int argc, char **argv)
 {
-	if (signum == SIGUSR2)
-		write(1, "Character has been sucessfully receieved!\n", 42);
-}
-
-void	config_signals(void)
-{
-	struct sigaction	sa_newsig;
-
-	sa_newsig.sa_handler = &sig_handler;
-	sa_newsig.sa_flags = SA_SIGINFO;
-	if (sigaction(SIGUSR1, &sa_newsig, NULL) == -1)
-		handle_errors("Failed to change SIGUSR1's behavior");
-	if (sigaction(SIGUSR2, &sa_newsig, NULL) == -1)
-		handle_errors("Failed to change SIGUSR2's behavior");
-}
-
-int	main(int argc, char *argv[])
-{
-	pid_t		sv_pid;
+	int	pid;
 	int	i;
 
 	i = 0;
-	if (argc != 3)
-		handle_errors("Invalid number of arguments");
-	while (argv[1][i])
+	if (argc == 3)
 	{
-		if (!ft_isdigit(argv[1][i]))
-			handle_errors("Invalid PID");
-		i++;	
+		pid = ft_atoi(argv[1]);
+		while (argv[2][i] != '\0')
+		{
+			ft_atob(pid, argv[2][i]);
+			i++;
+		}
+		signal(SIGUSR2, confirm_msg);
+		ft_atob(pid, '\0');
 	}
-	if (argv[2][0] == 0)
-		handle_errors("Invalid message (empty)");
-	sv_pid = ft_atoi(argv[1]);
-	config_signals();
-	send_msg(sv_pid, argv[2]);
-	while (1)
-		pause();
-	return (EXIT_SUCCESS);
+	else
+	{
+		ft_printf("Error\n");
+		return (1);
+	}
+	return (0);
 }
