@@ -6,13 +6,11 @@
 /*   By: fivieira <fivieira@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/12 11:24:33 by fivieira          #+#    #+#             */
-/*   Updated: 2023/08/16 16:50:20 by fivieira         ###   ########.fr       */
+/*   Updated: 2023/08/17 17:04:44 by fivieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include "ft_printf/libft/libft.h"
-#include "ft_printf/ft_printf.h"
 
 void	ft_atob(int pid, char c)
 {
@@ -21,7 +19,7 @@ void	ft_atob(int pid, char c)
 	bit = 0;
 	while (bit < 8)
 	{
-		if ((c & (0x01 << bit)))
+		if ((c & (1 << bit)))
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);

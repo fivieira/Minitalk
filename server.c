@@ -6,21 +6,20 @@
 /*   By: fivieira <fivieira@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:36:56 by fivieira          #+#    #+#             */
-/*   Updated: 2023/08/16 16:31:05 by fivieira         ###   ########.fr       */
+/*   Updated: 2023/08/17 17:03:15 by fivieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include "ft_printf/libft/libft.h"
-#include "ft_printf/ft_printf.h"
 
+// this receives the signal and converts it to a char
 void	ft_btoa(int sig)
 {
 	static int	bit;
 	static int	i;
 
 	if (sig == SIGUSR1)
-		i |= (0x01 << bit);
+		i = i | (1 << bit); 
 	bit++;
 	if (bit == 8)
 	{

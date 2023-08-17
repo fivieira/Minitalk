@@ -6,43 +6,16 @@
 /*   By: fivieira <fivieira@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 14:16:33 by fivieira          #+#    #+#             */
-/*   Updated: 2023/08/16 17:33:33 by fivieira         ###   ########.fr       */
+/*   Updated: 2023/08/17 17:18:06 by fivieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk_bonus.h"
 
-void	confirmmsg(int signal)
+void	confirm_msg(int signal)
 {
 	if (signal == SIGUSR2)
-		write(1,"message recieved\n",18);
-}
-
-static int	ft_atoi(const char *str)
-{
-	int					i;
-	int					sign;
-	unsigned long int	result;
-
-	i = 0;
-	sign = 1;
-	result = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-')
-	{
-		sign = -1;
-		i++;
-	}
-	else if (str[i] == '+')
-		i++;
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result *= 10;
-		result += str[i] - '0';
-		i++;
-	}
-	return (result * sign);
+		ft_printf("Mensagem recebida!!\n");
 }
 
 void	ft_atob(int pid, char c)
@@ -52,7 +25,7 @@ void	ft_atob(int pid, char c)
 	bit = 0;
 	while (bit < 8)
 	{
-		if ((c & (0x01 << bit)))
+		if ((c & (1 << bit)))
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
